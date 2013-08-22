@@ -1,0 +1,29 @@
+{
+  "name": "backbone.flashback",
+  "version": "0.0.1",
+  "homepage": "https://github.com/razh/backbone.flashback",
+  "authors": [
+    "Raymond Zhou"
+  ],
+  "description": "Undo/redo manager for Backbone Models and Collections.",
+  "main": "backbone.flashback.js",
+  "keywords": [
+    "backbone",
+    "undo",
+    "redo",
+    "history",
+    "memento"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "backbone": "~1.0.0",
+    "underscore": "~1.5.1"
+  }
+}
