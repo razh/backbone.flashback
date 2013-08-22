@@ -6,20 +6,22 @@ A simple undo/redo manager for Backbone Models and Collections.
 Usage
 ===
 
-    var history = new Backbone.Flashback();
-    var model = new Backbone.Model({ foo: 'foo' });
+```javascript
+var history = new Backbone.Flashback();
+var model = new Backbone.Model({ foo: 'foo' });
 
-    history.begin(model);
-    model.set('foo', 'bar');
-    history.end();
+history.begin(model);
+model.set('foo', 'bar');
+history.end();
 
-    model.get('foo'); // 'bar'
+model.get('foo'); // 'bar'
 
-    history.undo();
-    model.get('foo'); // 'foo'
+history.undo();
+model.get('foo'); // 'foo'
 
-    history.redo();
-    model.get('foo'); // 'bar'
+history.redo();
+model.get('foo'); // 'bar'
+```
 
 Methods
 ===
