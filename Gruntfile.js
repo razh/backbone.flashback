@@ -34,12 +34,22 @@ module.exports = function (grunt) {
         configFile: 'karma.conf.js'
       },
       continuous: {
-        singleRun: true,
-        browsers: ['PhantomJS']
-      },
-      dev: {
-        reporters: 'dots'
+        singleRun: true
       }
     }
   });
+
+  grunt.registerTask('test', [
+    'karma:continuous'
+  ]);
+
+  grunt.registerTask('build', [
+    'uglify'
+  ]);
+
+  grunt.registerTask('default', [
+    'jshint',
+    'test',
+    'build'
+  ]);
 };
