@@ -18,14 +18,16 @@ The following code examples assume this boilerplate code:
 ```javascript
 var manager = new Backbone.Flashback();
 
-var Model = new Backbone.Model({
+var Model = Backbone.Model.extend({
   defaults: function() {
-    id: _.uniqueId(),
-    foo: ''
+    return {
+      id: _.uniqueId(),
+      foo: ''
+    };
   }
 });
 
-var Collection = new Backbone.Collection({
+var Collection = Backbone.Collection.extend({
   model: Model
 });
 ```
@@ -83,10 +85,9 @@ Arrays of Models
 ---
 
 ```javascript
-var manager = new Backbone.Flashback();
 var models = [
-  new Backbone.Model({ foo: 'a' }),
-  new Backbone.Model({ foo: 'b' })
+  new Model({ foo: 'a' }),
+  new Model({ foo: 'b' })
 ];
 
 manager.begin(models);
@@ -116,12 +117,12 @@ The `target` can be a Backbone Model or Collection, or an array of Models or Col
 
 `end()`
 ---
-Stops tracking the target and saves the current state of the target if any changes were made since `begin()` was called.
+Stops tracking the `target` and saves its current state if any changes were made to `target` since `begin()` was called.
 
 `save(target)`
 ---
 
-Saves a snapshot of the current state of the target and deletes all states stored in the redo stack.
+Saves a snapshot of the current state of the `target` and deletes all states stored in the redo stack.
 
 `undo()`
 ---
