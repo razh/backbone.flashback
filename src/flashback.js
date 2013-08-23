@@ -38,7 +38,7 @@
     this.redoStack = [];
 
     // Store a state to determine whether we've changed a model/collection.
-    this.previousState = null;
+    this.previous = null;
   }
 
   Backbone.Flashback = Flashback;
@@ -98,19 +98,19 @@
         return;
       }
 
-      this.previousState = this.snapshot( target );
+      this.previous = this.snapshot( target );
     },
 
     /**
      * Stop tracking a target and push changes to history if anything changed.
      */
     end: function() {
-      if ( !this.previousState ) {
+      if ( !this.previous ) {
         return;
       }
 
       // Get all mementos that have changed since begin() was called.
-      var mementos = this.previousState.filter(function( memento ) {
+      var mementos = this.previous.filter(function( memento ) {
         return !_.isEqual( memento.state, memento.target.toJSON() );
       });
 
@@ -122,7 +122,7 @@
       if ( targets.length ) {
         // Save if we don't have a baseline history.
         if ( !this.current ) {
-          this.store( this.previousState );
+          this.store( this.previous );
         }
 
         // Save the previous state if current does not already know about it.
@@ -172,6 +172,8 @@
 
     /**
      * Goes through the undo and redo stacks and rebuilds references to models.
+     * Warning: this is an O(n*m) operation, where n is the number of mementos
+     * in the history stacks, and m is the size of the collection.
      */
     reference: function( collection ) {
       this.undoStack.concat( this.redoStack ).forEach(function( state ) {
