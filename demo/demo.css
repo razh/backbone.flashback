@@ -1,0 +1,20 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #def;
+}
+
+.post-view {
+  float: left;
+  width: 300px;
+
+  margin: 10px;
+  padding: 15px 30px 30px 30px;
+
+  background-color: #fff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
