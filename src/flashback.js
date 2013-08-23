@@ -1,15 +1,12 @@
 (function( _, Backbone, undefined ) {
   'use strict';
 
-  var Flashback = {};
-  Backbone.Flashback = Flashback;
-
-  var Memento = Flashback.Memento = function( target ) {
+  function Memento( target ) {
     this.target = target || null;
     this.state  = target ? this.target.toJSON() : {};
-  };
+  }
 
-  Flashback.Memento.prototype = {
+  Memento.prototype = {
     restore: function() {
       if ( this.target ) {
         this.target.set( this.state );
@@ -34,7 +31,7 @@
     }
   };
 
-  Flashback.History = function() {
+  function Flashback() {
     this.current = null;
 
     this.undoStack = [];
@@ -42,7 +39,10 @@
 
     // Store a state to determine whether we've changed a model/collection.
     this.previousState = null;
-  };
+  }
+
+  Backbone.Flashback = Flashback;
+  Flashback.Memento  = Memento;
 
   /**
    * There are four types of history states:
@@ -53,7 +53,7 @@
    *
    * These states are all stored as an array of Mementos.
    */
-  Flashback.History.prototype = {
+  Flashback.prototype = {
     /**
      * Save the target's attributes.
      * Wipes the redo stack.

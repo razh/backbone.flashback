@@ -2,7 +2,7 @@
 (function( _, Backbone, undefined ) {
   'use strict';
 
-  describe( 'History', function() {
+  describe( 'Flashback', function() {
 
     var Flashback = Backbone.Flashback,
         Mememto   = Flashback.Memento;
@@ -21,14 +21,14 @@
       model: Model
     });
 
-    var history;
+    var manager;
 
     describe( 'Backbone.Model', function() {
 
       var model;
 
       beforeEach(function() {
-        history = new Flashback.History();
+        manager = new Flashback();
 
         model = new Model({
           foo: 10,
@@ -37,10 +37,10 @@
       });
 
       it( 'saves the state of a Backbone.Model', function() {
-        history.save( model );
+        manager.save( model );
         model.set( 'foo', 200 );
-        history.save( model );
-        history.undo();
+        manager.save( model );
+        manager.undo();
 
         // foo has its old value.
         expect( model.get( 'foo' ) ).toBe( 10 );
@@ -48,77 +48,77 @@
         expect( model.get( 'bar' ) ).toBe( 20 );
 
         // Nothing happens.
-        history.undo();
+        manager.undo();
         expect( model.get( 'foo' ) ).toBe( 10 );
       });
 
       it( 'redoes an undone state of a Model', function() {
-        history.save( model );
+        manager.save( model );
 
         model.set( 'foo', 200 );
-        history.save( model );
+        manager.save( model );
 
-        history.undo();
+        manager.undo();
         expect( model.get( 'foo' ) ).toBe( 10 );
 
-        history.redo();
+        manager.redo();
         // foo has its new value.
         expect( model.get( 'foo' ) ).toBe( 200 );
 
         // Nothing happens.
-        history.redo();
+        manager.redo();
         expect( model.get( 'foo' ) ).toBe( 200 );
       });
 
       it( 'multiple undos and redos', function() {
-        history.save( model );
+        manager.save( model );
         model.set( 'foo', 200 );
-        history.save( model );
+        manager.save( model );
         model.set( 'foo', 300 );
-        history.save( model );
+        manager.save( model );
 
         // Undo.
         expect( model.get( 'foo' ) ).toBe( 300 );
-        history.undo();
+        manager.undo();
         expect( model.get( 'foo' ) ).toBe( 200 );
-        history.undo();
+        manager.undo();
         expect( model.get( 'foo' ) ).toBe( 10 );
 
-        expect( history.redoStack.length ).toBe( 2 );
+        expect( manager.redoStack.length ).toBe( 2 );
 
         // Redo.
-        history.redo();
+        manager.redo();
         expect( model.get( 'foo' ) ).toBe( 200 );
-        history.redo();
+        manager.redo();
         expect( model.get( 'foo' ) ).toBe( 300 );
 
         // Undo and redo.
-        history.undo();
+        manager.undo();
         expect( model.get( 'foo' ) ).toBe( 200 );
-        history.redo();
+        manager.redo();
         expect( model.get( 'foo' ) ).toBe( 300 );
 
-        history.undo();
+        manager.undo();
         expect( model.get( 'foo' ) ).toBe( 200 );
-        history.undo();
+        manager.undo();
         expect( model.get( 'foo' ) ).toBe( 10 );
-        history.redo();
+        manager.redo();
         expect( model.get( 'foo' ) ).toBe( 200 );
-        history.redo();
+        manager.redo();
         expect( model.get( 'foo' ) ).toBe( 300 );
       });
 
-      it( 'save() erases future redo history if in the past', function() {
-        history.save( model );
+      it( 'save() erases future redo manager if in the past', function() {
+        manager.save( model );
         model.set( 'foo', 200 );
-        history.save( model );
-        history.undo();
+        manager.save( model );
+        manager.undo();
 
         model.set( 'foo', 100 );
-        history.save( model );
+        manager.save( model );
 
         // Redo does nothing.
-        history.redo();
+        manager.redo();
         expect( model.get( 'foo' ) ).toBe( 100 );
       });
     });
@@ -129,7 +129,7 @@
       var collection;
 
       beforeEach(function() {
-        history = new Flashback.History();
+        manager = new Flashback();
 
         collection = new Collection([
           { foo: 10, bar: 50 },
@@ -184,15 +184,15 @@
             id2 = model2.id;
 
         expect( collection.length ).toBe(4);
-        history.save( collection );
+        manager.save( collection );
 
         collection.remove( collection.at(0) );
         expect( collection.length ).toBe(3);
         // It no longer exists in the array.
         expect( typeof collection.get( id0 ) ).toBe( 'undefined' );
-        history.save( collection );
+        manager.save( collection );
 
-        history.undo();
+        manager.undo();
         // Check if ids are the same.
         expect( collection.get( id0 ).id ).toBe( id0 );
         expect( collection.get( id1 ).id ).toBe( id1 );
@@ -201,7 +201,7 @@
         expect( collection.get( id1 ).get( 'foo' ) ).toBe( 20 );
         expect( collection.length ).toBe(4);
 
-        history.redo();
+        manager.redo();
         expect( collection.at(0).id ).toBe( id1 );
         expect( collection.at(1).id ).toBe( id2 );
         expect( collection.at(0).get( 'foo' ) ).toBe( 20 );
@@ -211,37 +211,37 @@
 
       it( 'mementos maintain references to models after collection addition/removal', function() {
         var id0 = collection.at(0).id;
-        history.save( collection.at(0) );
+        manager.save( collection.at(0) );
         collection.at(0).set( 'foo', 200 );
-        history.save( collection.at(0) );
+        manager.save( collection.at(0) );
 
-        history.save( collection );
+        manager.save( collection );
         collection.remove( collection.at(0) );
-        history.save( collection );
+        manager.save( collection );
 
-        history.undo();
+        manager.undo();
         expect( collection.length ).toBe(4);
 
-        history.undo();
+        manager.undo();
         expect( collection.get( id0 ).get( 'foo' ) ).toBe( 200 );
-        history.undo();
+        manager.undo();
         expect( collection.get( id0 ).get( 'foo' ) ).toBe( 10 );
       });
 
       it( 'batch-saving of multiple models at once', function() {
         expect( collection.at(0).get( 'foo' ) ).toBe( 10 );
         // Attempt to save an array.
-        history.save( collection.models );
+        manager.save( collection.models );
 
         collection.at(0).set( 'foo', 200 );
         collection.at(1).set( 'foo', 210 );
-        history.save( collection.models );
+        manager.save( collection.models );
 
-        history.undo();
+        manager.undo();
         expect( collection.at(0).get( 'foo' ) ).toBe( 10 );
         expect( collection.at(1).get( 'foo' ) ).toBe( 20 );
 
-        history.redo();
+        manager.redo();
         expect( collection.at(0).get( 'foo' ) ).toBe( 200 );
         expect( collection.at(1).get( 'foo' ) ).toBe( 210 );
       });
@@ -254,35 +254,35 @@
 
         var rect1 = tempCollection.at(1);
 
-        history.begin( rect1 );
+        manager.begin( rect1 );
         rect1.set( 'foo', 123 );
-        history.end();
+        manager.end();
 
-        history.begin( [ collection, tempCollection ] );
+        manager.begin( [ collection, tempCollection ] );
         collection.remove( collection.at(0) );
         tempCollection.remove( rect1 );
-        history.end();
+        manager.end();
 
         expect( collection.length ).toBe(3);
         expect( tempCollection.length ).toBe(1);
         expect( tempCollection.at(0).get( 'foo' ) ).toBe( 217 );
 
-        history.undo();
+        manager.undo();
         expect( collection.length ).toBe(4);
         expect( tempCollection.length ).toBe(2);
         expect( tempCollection.at(1).get( 'foo' ) ).toBe( 123 );
 
-        history.undo();
+        manager.undo();
         expect( collection.length ).toBe(4);
         expect( tempCollection.length ).toBe(2);
         expect( tempCollection.at(1).get( 'foo' ) ).toBe( 'b' );
 
-        history.redo();
+        manager.redo();
         expect( collection.length ).toBe(4);
         expect( tempCollection.length ).toBe(2);
         expect( tempCollection.at(1).get( 'foo' ) ).toBe( 123 );
 
-        history.redo();
+        manager.redo();
         expect( collection.length ).toBe(3);
         expect( tempCollection.length ).toBe(1);
         expect( tempCollection.at(0).get( 'foo' ) ).toBe( 217 );
@@ -292,26 +292,26 @@
     describe( 'Helper methods', function() {
 
       beforeEach(function() {
-        history = new Flashback.History();
+        manager = new Flashback();
       });
 
-      it( 'clear() empties the history', function() {
+      it( 'clear() empties the history stacks', function() {
         var model = new Model({
           foo: 10
         });
 
-        history.save( model );
+        manager.save( model );
         model.set( 'foo', 200 );
-        history.save( model );
-        history.undo();
-        expect( history.redoStack.length ).toBe(1);
+        manager.save( model );
+        manager.undo();
+        expect( manager.redoStack.length ).toBe(1);
 
-        history.clear();
-        expect( history.undoStack.length ).toBe(0);
-        expect( history.redoStack.length ).toBe(0);
+        manager.clear();
+        expect( manager.undoStack.length ).toBe(0);
+        expect( manager.redoStack.length ).toBe(0);
 
         // Redo does nothing.
-        history.redo();
+        manager.redo();
         expect( model.get( 'foo' ) ).toBe( 10 );
       });
 
@@ -320,23 +320,23 @@
           foo: 10
         });
 
-        history.begin( model );
+        manager.begin( model );
         model.set( 'foo', 30 );
         model.set( 'foo', 50 );
         model.set( 'foo', 100 );
-        history.end();
+        manager.end();
 
-        expect( history.current.length ).toBe(1);
+        expect( manager.current.length ).toBe(1);
         expect( model.get( 'foo' ) ).toBe( 100 );
 
-        history.undo();
+        manager.undo();
         expect( model.get( 'foo' ) ).toBe( 10 );
 
         // Doesn't do anything.
-        history.undo();
+        manager.undo();
         expect( model.get( 'foo' ) ).toBe( 10 );
 
-        history.redo();
+        manager.redo();
         expect( model.get( 'foo' ) ).toBe( 100 );
       });
 
@@ -347,13 +347,13 @@
         ]);
 
         // Note: begin() will save this collection state as a baseline.
-        history.begin( collection );
+        manager.begin( collection );
         collection.at(0).set( 'foo', 30 );
         collection.at(0).set( 'foo', 10 );
-        history.end();
+        manager.end();
 
-        expect( history.current ).toBe( null );
-        expect( history.undoStack.length ).toBe(0);
+        expect( manager.current ).toBe( null );
+        expect( manager.undoStack.length ).toBe(0);
       });
     });
   });
