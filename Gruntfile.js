@@ -25,6 +25,7 @@ module.exports = function (grunt) {
       all: [
         'Gruntfile.js',
         'src/flashback.js',
+        'src/flashback_test.js',
         'test/spec/**/*.js'
       ]
     },
