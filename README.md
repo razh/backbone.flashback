@@ -58,7 +58,8 @@ var collection = new Collection([
   { foo: 'b' }
 ]);
 
-manager.begin();
+// Change the first model.
+manager.begin(collection);
 collection.at(0).set('foo', 'c');
 manager.end();
 

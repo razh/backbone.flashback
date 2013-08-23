@@ -1,6 +1,6 @@
 {
   "name": "backbone.flashback",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Undo/redo manager for Backbone Models and Collections.",
   "main": "backbone.flashback.js",
   "scripts": {
