@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Backbone.Flashback demo</title>
+</head>
+<body>
+
+  <div id="posts-view"></div>
+
+  <script type="text/template" id="posts-view-template">
+    <div class="post-view">
+      <% _.each( posts, function( post ) { %>
+        <h1><%= post.get( 'title' ) %></h1>
+        <p><%= post.get( 'text' ) %></p>
+      <% }); %>
+    </div>
+  </script>
+
+  <script src="../vendor/jquery/jquery.js"></script>
+  <script src="../vendor/underscore/underscore.js"></script>
+  <script src="../vendor/backbone/backbone.js"></script>
+  <script src="../src/flashback.js"></script>
+  <script src="demo.js"></script>
+</body>
+</html>
