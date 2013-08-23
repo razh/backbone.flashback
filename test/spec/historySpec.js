@@ -355,6 +355,41 @@
         expect( manager.current ).toBe( null );
         expect( manager.undoStack.length ).toBe(0);
       });
+
+      it( 'canUndo()/canRedo()', function() {
+        spyOn( manager, 'undo' ).andCallThrough();
+        spyOn( manager, 'redo' ).andCallThrough();
+
+        var model = new Model({
+          foo: 10
+        });
+
+        manager.save( model );
+
+        model.set( 'foo', 20 );
+        manager.save( model );
+
+        model.set( 'foo', 30 );
+        manager.save( model );
+
+        model.set( 'foo', 40 );
+        manager.save( model );
+
+        while ( manager.canUndo() ) {
+          manager.undo();
+        }
+
+        expect( model.get( 'foo' ) ).toBe( 10 );
+        expect( manager.undo.calls.length ).toBe(3);
+
+        while ( manager.canRedo() ) {
+          manager.redo();
+        }
+
+        expect( model.get( 'foo' ) ).toBe( 40 );
+        expect( manager.redo.calls.length ).toBe(3);
+
+      });
     });
   });
 }) ( _, Backbone );

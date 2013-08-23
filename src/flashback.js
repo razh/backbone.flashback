@@ -162,6 +162,9 @@
     undo: function() { return this.timeTravel( this.undoStack, this.redoStack ); },
     redo: function() { return this.timeTravel( this.redoStack, this.undoStack ); },
 
+    canUndo: function() { return this.undoStack.length; },
+    canRedo: function() { return this.redoStack.length; },
+
     clear: function() {
       this.undoStack = [];
       this.redoStack = [];

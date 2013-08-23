@@ -119,17 +119,27 @@ The `target` can be a Backbone Model or Collection, or an array of Models or Col
 ---
 Stops tracking the `target` and saves its current state if any changes were made to `target` since `begin()` was called.
 
+
 `save(target)`
 ---
-
 Saves a snapshot of the current state of the `target` and deletes all states stored in the redo stack.
+
 
 `undo()`
 ---
-
 Undoes the last saved history state.
+
 
 `redo()`
 ---
-
 Restores the last undone history state.
+
+
+`canUndo()`
+---
+Returns the number of states currently on the undo stack.
+
+
+`canRedo()`
+---
+Returns the number of states currently on the redo stack.
