@@ -11,7 +11,9 @@
 
   Flashback.Memento.prototype = {
     restore: function() {
-      this.target.set( this.state );
+      if ( this.target ) {
+        this.target.set( this.state );
+      }
     },
 
     /**
@@ -19,7 +21,7 @@
      * Don't do anything if the target is not in the collection.
      */
     reference: function( collection ) {
-      if ( this.target instanceof Backbone.Collection ) {
+      if ( !collection || this.target instanceof Backbone.Collection ) {
         return;
       }
 
@@ -57,11 +59,19 @@
      * Wipes the redo stack.
      */
     save: function( target ) {
+      this.store( this.snapshot( target ) );
+    },
+
+    /**
+     * Saves an array of mementos.
+     * Wipes the redo stack.
+     */
+    store: function( state ) {
       if ( this.current ) {
         this.undoStack.push( this.current );
       }
 
-      this.current = this.snapshot( target );
+      this.current = state;
       this.redoStack = [];
     },
 
@@ -89,10 +99,6 @@
       }
 
       this.previousState = this.snapshot( target );
-      // Save if we don't have a baseline history.
-      if ( !this.current ) {
-        this.save( target );
-      }
     },
 
     /**
@@ -114,6 +120,11 @@
 
       // Save only if we have anything to save.
       if ( targets.length ) {
+        // Save if we don't have a baseline history.
+        if ( !this.current ) {
+          this.store( this.previousState );
+        }
+
         // Save the previous state if current does not already know about it.
         this.current = this.current.concat( mementos );
         this.save( targets );
@@ -125,7 +136,7 @@
      */
     timeTravel: function( forwardStack, backwardStack ) {
       // Don't do anything if we can't time travel further.
-      if ( !forwardStack.length ) {
+      if ( !forwardStack || !backwardStack || !forwardStack.length ) {
         return;
       }
 
