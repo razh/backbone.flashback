@@ -22,7 +22,7 @@ module.exports = function(config) {
       'vendor/backbone/backbone.js',
 
       // Main files.
-      'src/flashback.js',
+      'flashback.js',
 
       // Test specs.
       'test/**/*.js'
