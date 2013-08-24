@@ -3,7 +3,7 @@
 
   function Memento( target ) {
     this.target = target || null;
-    this.state  = target ? this.target.toJSON() : {};
+    this.state  = target ? target.toJSON() : {};
   }
 
   Memento.prototype = {
@@ -120,9 +120,8 @@
 
       // Save only if we have anything to save.
       if ( targets.length ) {
-        // Save if we don't have a baseline history.
         if ( !this.current ) {
-          this.store( this.previous );
+          this.current = [];
         }
 
         // Save the previous state if current does not already know about it.
