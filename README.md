@@ -8,13 +8,43 @@ About
 
 Requirements
 ---
-Backbone.Flashback depends on Underscore and Backbone. For Flashback to work, models must have unique ids assigned to them.
+Backbone.Flashback depends on [Underscore](https://github.com/jashkenas/underscore/) and [Backbone](https://github.com/jashkenas/backbone/). For Flashback to work, models must have unique ids assigned to them.
+
+If you're using [RequireJS](https://github.com/jrburke/requirejs), you'll need to shim Flashback and its dependencies:
+
+```javascript
+requirejs.config({
+  shim: {
+    'underscore': {
+      exports: '_'
+    },
+    'backbone': {
+      deps: ['jquery', 'underscore'],
+      exports: 'Backbone'
+    },
+    'flashback': {
+      deps: ['underscore', 'backbone'],
+      exports: 'Backbone.Flashback'
+    }
+  },
+
+  paths: {
+    'jquery': 'path/to/jquery',
+    'underscore': 'path/to/underscore',
+    'backbone': 'path/to/backbone',
+    'flashback': 'path/to/flashback'
+  }
+});
+
+define(['flashback'], function(Flashback) {
+  var manager = new Flashback();
+});
+```
 
 Usage
 ===
 
-The following code examples assume this boilerplate code:
-
+Boilerplate code for the following code examples:
 ```javascript
 var manager = new Backbone.Flashback();
 
@@ -71,7 +101,7 @@ manager.end();
 
 collection.pluck('foo'); // ['b']
 
-// The first model is restored to the end of the collection.
+// On undo, the first model is restored to the end of the collection.
 // Hence, why the result is ['b', 'c'] instead of ['c', 'b'].
 manager.undo();
 collection.pluck('foo'); // ['b', 'c']
@@ -85,12 +115,10 @@ collection.pluck('foo'); // ['b', 'c']
 
 By default, order is **not** maintained when deleted models are restored to collections. Backbone will keep your models sorted if you define a `comparator` function on the collection.
 
-Backbone
-
 ```javascript
 var collection = new Collection();
 
-// For example, if your model idAttribute is an integer represented as a string:
+// For example, if your model's idAttribute is an integer represented as a string:
 collection.comparator = function(model) {
   return parseInt(model.id, 10);
 };

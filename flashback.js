@@ -182,6 +182,4 @@
       });
     }
   };
-
-  return Flashback;
 }) ( _, Backbone );
