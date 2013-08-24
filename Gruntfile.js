@@ -10,10 +10,10 @@ module.exports = function (grunt) {
     uglify: {
       default: {
         options: {
-          sourceMap: 'flashback.min.map',
+          sourceMap: 'flashback-min.map',
         },
         files: {
-          'flashback.min.js': ['flashback.js']
+          'flashback-min.js': ['flashback.js']
         }
       }
     },
