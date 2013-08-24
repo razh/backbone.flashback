@@ -71,14 +71,29 @@ manager.end();
 
 collection.pluck('foo'); // ['b']
 
+// The first model is restored to the end of the collection.
+// Hence, why the result is ['b', 'c'] instead of ['c', 'b'].
 manager.undo();
-collection.pluck('foo'); // ['c', 'b']
+collection.pluck('foo'); // ['b', 'c']
 
 manager.undo();
-collection.pluck('foo'); // ['a', 'b']
+collection.pluck('foo'); // ['b', 'a']
 
 manager.redo();
-collection.pluck('foo'); // ['c', 'b']
+collection.pluck('foo'); // ['b', 'c']
+```
+
+By default, order is **not** maintained when deleted models are restored to collections. Backbone will keep your models sorted if you define a `comparator` function on the collection.
+
+Backbone
+
+```javascript
+var collection = new Collection();
+
+// For example, if your model idAttribute is an integer represented as a string:
+collection.comparator = function(model) {
+  return parseInt(model.id, 10);
+};
 ```
 
 Arrays of Models
@@ -117,7 +132,7 @@ The `target` can be a Backbone Model or Collection, or an array of Models or Col
 
 `end()`
 ---
-Stops tracking the `target` and saves its current state if any changes were made to `target` since `begin()` was called.
+Stops tracking the `target` and call `save()` on its current state if any changes were made to `target` since `begin()` was called.
 
 
 `save(target)`
