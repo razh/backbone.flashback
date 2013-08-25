@@ -3,50 +3,11 @@ backbone.flashback
 
 A simple undo/redo manager for Backbone Models and Collections.
 
-About
-===
-
-Requirements
----
-Backbone.Flashback depends on [Underscore](https://github.com/jashkenas/underscore/) and [Backbone](https://github.com/jashkenas/backbone/). For Flashback to work, models must have unique ids assigned to them.
-
-If you're using [RequireJS](https://github.com/jrburke/requirejs), you'll need to shim Flashback and its dependencies:
-
-```javascript
-requirejs.config({
-  shim: {
-    'underscore': {
-      exports: '_'
-    },
-    'backbone': {
-      deps: ['jquery', 'underscore'],
-      exports: 'Backbone'
-    },
-    'flashback': {
-      deps: ['underscore', 'backbone'],
-      exports: 'Backbone.Flashback'
-    }
-  },
-
-  paths: {
-    'jquery': 'path/to/jquery',
-    'underscore': 'path/to/underscore',
-    'backbone': 'path/to/backbone',
-    'flashback': 'path/to/flashback'
-  }
-});
-
-define(['flashback'], function(Flashback) {
-  var manager = new Flashback();
-});
-```
-
 Usage
 ===
-
 Boilerplate code for the following code examples:
 ```javascript
-var manager = new Backbone.Flashback();
+var manager = new Flashback();
 
 var Model = Backbone.Model.extend({
   defaults: function() {
@@ -64,7 +25,6 @@ var Collection = Backbone.Collection.extend({
 
 Models
 ---
-
 ```javascript
 var model = new Model({ foo: 'a' });
 
@@ -83,7 +43,6 @@ model.get('foo'); // 'b'
 
 Collections
 ---
-
 ```javascript
 var collection = new Collection([
   { foo: 'a' },
@@ -126,7 +85,6 @@ collection.comparator = function(model) {
 
 Arrays of Models
 ---
-
 ```javascript
 var models = [
   new Model({ foo: 'a' }),
@@ -148,41 +106,128 @@ manager.redo();
 // ['c', 'd']
 ```
 
+Requirements
+---
+Backbone.Flashback depends on [Underscore](https://github.com/jashkenas/underscore/) and [Backbone](https://github.com/jashkenas/backbone/). For Flashback to work, models must have unique ids assigned to them.
+
+If you're using [RequireJS](https://github.com/jrburke/requirejs), you'll need to shim Flashback and its dependencies:
+```javascript
+requirejs.config({
+  shim: {
+    'underscore': {
+      exports: '_'
+    },
+    'backbone': {
+      deps: ['jquery', 'underscore'],
+      exports: 'Backbone'
+    },
+    'flashback': {
+      deps: ['underscore', 'backbone'],
+      exports: 'Backbone.Flashback'
+    }
+  },
+
+  paths: {
+    'jquery': 'path/to/jquery',
+    'underscore': 'path/to/underscore',
+    'backbone': 'path/to/backbone',
+    'flashback': 'path/to/flashback'
+  }
+});
+
+define(['flashback'], function(Flashback) {
+  var manager = new Flashback();
+});
+```
+
 Methods
 ===
 
-`begin(target)`
+`manager.begin(target)`
 ---
-Begins tracking changes to the `target`.
+Begin tracking changes to the `target`.
 
 The `target` can be a Backbone Model or Collection, or an array of Models or Collections.
 
-
-`end()`
+`manager.end()`
 ---
-Stops tracking the `target` and call `save()` on its current state if any changes were made to `target` since `begin()` was called.
+Stop tracking the `target` and call `save()` on its current state if any changes were made to `target` since `begin()` was called.
 
-
-`save(target)`
+`manager.save(target)`
 ---
-Saves a snapshot of the current state of the `target` and deletes all states stored in the redo stack.
+Save a snapshot of the current state of the `target` and deletes all states stored in the redo stack.
 
-
-`undo()`
+`manager.undo()`
 ---
-Undoes the last saved history state.
+Undo the last saved history state.
 
-
-`redo()`
+`manager.redo()`
 ---
-Restores the last undone history state.
+Restore the last undone history state.
 
-
-`canUndo()`
+`manager.canUndo()`
 ---
-Returns the number of states currently on the undo stack.
+Return the number of states currently on the undo stack.
 
-
-`canRedo()`
+`manager.canRedo()`
 ---
-Returns the number of states currently on the redo stack.
+Return the number of states currently on the redo stack.
+
+Development
+===
+
+Install [NodeJS](https://github.com/joyent/node). If you have [Homebrew](http://brew.sh/):
+
+    brew install node
+
+Install [Grunt](https://github.com/gruntjs/grunt-cli).
+
+    npm install -g grunt-cli
+
+Install project dependencies.
+
+    npm install
+
+Install Karma and PhantomJS.
+
+    npm install -g karma
+    npm install -g phantomjs
+
+Or, if you have Homebrew:
+
+    brew install phantomjs
+
+
+Building
+---
+
+    grunt
+
+This will run [JSHint](https://github.com/jshint/jshint), execute all tests, and minify with [UglifyJS2](https://github.com/mishoo/UglifyJS2).
+
+
+Running tests
+---
+Flashback uses [Karma](https://github.com/karma-runner/karma) (v0.10) with the [Jasmine](http://pivotal.github.io/jasmine/) testing framework and [PhantomJS](https://github.com/ariya/phantomjs) for headless testing.
+
+To run tests with `autoWatch` on, where tests will be executed on file change.
+
+    karma start
+
+You can also run tests via Grunt tasks.
+
+Equivalent to `karma start`:
+
+    grunt karma:unit
+
+Run tests once, for continuous integration:
+
+    grunt karma:continuous
+
+Run tests in Chrome:
+
+    grunt karma:browser
+
+License
+---
+MIT.
