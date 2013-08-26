@@ -7,7 +7,7 @@ Usage
 ===
 Boilerplate code for the following code examples:
 ```javascript
-var manager = new Flashback();
+var manager = new Backbone.Flashback();
 
 var Model = Backbone.Model.extend({
   defaults: function() {
@@ -188,7 +188,7 @@ Install project dependencies.
 
     npm install
 
-Install Karma and PhantomJS.
+Install [Karma](https://github.com/karma-runner/karma) and [PhantomJS](https://github.com/ariya/phantomjs).
 
     npm install -g karma
     npm install -g phantomjs
@@ -210,7 +210,7 @@ Running tests
 ---
 Flashback uses [Karma](https://github.com/karma-runner/karma) (v0.10) with the [Jasmine](http://pivotal.github.io/jasmine/) testing framework and [PhantomJS](https://github.com/ariya/phantomjs) for headless testing.
 
-To run tests with `autoWatch` on, where tests will be executed on file change.
+To run tests with the `autoWatch` option on, where Karma will watch for file changes and run tests automatically:
 
     karma start
 
