@@ -5,7 +5,7 @@
   describe( 'Flashback - Collections.', function() {
 
     var Flashback = Backbone.Flashback,
-        Mememto   = Flashback.Memento;
+        Memento   = Flashback.Memento;
 
     var Model = Backbone.Model.extend({
       defaults: function() {
@@ -45,7 +45,7 @@
       expect( collection.get( id0 ) ).toBe( collection.at(0) );
       expect( collection.pluck( 'id' ) ).toEqual( [ id0, id1, id2, id3 ] );
 
-      var memento = new Mememto( collection );
+      var memento = new Memento( collection );
       collection.remove( collection.at(0) );
 
       memento.restore();
@@ -63,7 +63,7 @@
       collection.set( collection.toJSON() );
       expect( collection.at(0).id ).toBe( id0 );
 
-      var memento = new Mememto( collection );
+      var memento = new Memento( collection );
       expect( memento.state[0].id ).toBe( id0 );
       memento.restore();
       expect( collection.at(0).id ).toBe( id0 );

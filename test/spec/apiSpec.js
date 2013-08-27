@@ -4,8 +4,7 @@
 
   describe( 'Flashback - API.', function() {
 
-    var Flashback = Backbone.Flashback,
-        Mememto   = Flashback.Memento;
+    var Flashback = Backbone.Flashback;
 
     var Model = Backbone.Model.extend({
       defaults: function() {

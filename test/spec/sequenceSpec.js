@@ -7,8 +7,7 @@
    */
   describe( 'Flashback — Sequence of edits.', function() {
 
-    var Flashback = Backbone.Flashback,
-        Mememto   = Flashback.Memento;
+    var Flashback = Backbone.Flashback;
 
     var Model = Backbone.Model.extend({
       defaults: function() {
