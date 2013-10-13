@@ -22,6 +22,11 @@
 
     var collection, manager;
 
+    var model0JSON, model1JSON,
+        id0, id1, id2, id3;
+
+    var originalOrderIds;
+
     beforeEach(function() {
       manager = new Flashback();
 
@@ -31,26 +36,58 @@
         { foo: 30, bar: 70 },
         { foo: 40, bar: 80 }
       ]);
+
+      model0JSON = collection.at(0).toJSON();
+      model1JSON = collection.at(1).toJSON();
+
+      id0 = collection.at(0).id;
+      id1 = collection.at(1).id;
+      id2 = collection.at(2).id;
+      id3 = collection.at(3).id;
+
+      originalOrderIds = [ id0, id1, id2, id3 ];
     });
 
-    it( 'restoring a collection from a memento may change element order', function() {
-      var model0JSON = collection.at(0).toJSON();
-
-      var id0 = collection.at(0).id,
-          id1 = collection.at(1).id,
-          id2 = collection.at(2).id,
-          id3 = collection.at(3).id;
+    it( 'removing an element and restoring a collection does not change element order', function() {
+      var memento;
 
       expect( collection.at(0).id ).toBe( id0 );
       expect( collection.get( id0 ) ).toBe( collection.at(0) );
-      expect( collection.pluck( 'id' ) ).toEqual( [ id0, id1, id2, id3 ] );
+      expect( collection.pluck( 'id' ) ).toEqual( originalOrderIds );
 
-      var memento = new Memento( collection );
+      // Remove from the collection start.
+      memento = new Memento( collection );
       collection.remove( collection.at(0) );
 
       memento.restore();
-      expect( collection.pluck( 'id' ) ).toEqual( [ id1, id2, id3, id0 ] );
+      expect( collection.pluck( 'id' ) ).toEqual( originalOrderIds );
       expect( collection.get( id0 ).toJSON() ).toEqual( model0JSON );
+
+      // Remove from the collection middle.
+      memento = new Memento( collection );
+      collection.remove( collection.at(1) );
+
+      memento.restore();
+      expect( collection.pluck( 'id' ) ).toEqual( originalOrderIds );
+      expect( collection.get( id1 ).toJSON() ).toEqual( model1JSON );
+    });
+
+    it( 'adding an element and restoring a collection does not change element order', function() {
+      // Add to collection middle.
+      var memento = new Memento( collection );
+      var model = new Model({
+        foo: 50,
+        bar: 90
+      });
+
+      var newOrderIds = originalOrderIds.slice();
+      newOrderIds.splice( 1, 0, model.id );
+
+      collection.add( model, { at: 1 } );
+      expect( collection.pluck( 'id' ) ).toEqual( newOrderIds );
+
+      memento.restore();
+      expect( collection.pluck( 'id' ) ).toEqual( originalOrderIds );
     });
 
     it( 'restoring a collection from a memento does not change ids', function() {
@@ -69,15 +106,7 @@
       expect( collection.at(0).id ).toBe( id0 );
     });
 
-    it( 'save the state of a collection', function() {
-      var model0 = collection.at(0),
-          model1 = collection.at(1),
-          model2 = collection.at(2);
-
-      var id0 = model0.id,
-          id1 = model1.id,
-          id2 = model2.id;
-
+    it( 'saves the state of a collection', function() {
       expect( collection.length ).toBe(4);
 
       manager.save( collection );
@@ -106,8 +135,6 @@
     });
 
     it( 'mementos maintain references to models after collection addition/removal', function() {
-      var id0 = collection.at(0).id;
-
       manager.save( collection.at(0) );
       collection.at(0).set( 'foo', 200 );
       manager.save( collection.at(0) );
