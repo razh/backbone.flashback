@@ -195,7 +195,7 @@ This will run [JSHint](https://github.com/jshint/jshint), execute all tests, and
 
 Running tests
 ---
-Flashback uses [Karma](https://github.com/karma-runner/karma) (v0.10) with the [Jasmine](http://pivotal.github.io/jasmine/) testing framework and [PhantomJS](https://github.com/ariya/phantomjs) for headless testing.
+Flashback uses [Karma](https://github.com/karma-runner/karma) (v0.10) with the [Jasmine](https://jasmine.github.io/) testing framework and [PhantomJS](https://github.com/ariya/phantomjs) for headless testing.
 
 To run tests with the `autoWatch` option on, where Karma will watch for file changes and run tests automatically:
 
